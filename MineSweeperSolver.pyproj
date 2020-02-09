@@ -5,12 +5,12 @@
     <ProjectGuid>5c592523-efb5-42f2-9d2e-44ff449c42d5</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>MineSweeperSolver.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <SearchPath>..\..\..\AppData\Local\Programs\Python\Python36\Lib\site-packages;..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\Lib\site-packages</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>MineSweeperSolver</Name>
     <RootNamespace>MineSweeperSolver</RootNamespace>
+    <InterpreterId>Global|PythonCore|3.6</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +22,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="MineSweeperSolver.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|3.6" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
