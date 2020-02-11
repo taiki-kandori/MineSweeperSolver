@@ -15,10 +15,13 @@ from win32 import win32api
 from win32 import win32gui
 
 from PIL import ImageGrab
+import cv2
+import glob
+import numpy as np
 
-#以下、メインルーチン
-if __name__ == "__main__":
-    #実行前の待機(秒)
+
+def main():
+	#実行前の待機(秒)
     time.sleep(1)
     #画面サイズの取得
     screen_x,screen_y = pyautogui.size()
@@ -64,9 +67,44 @@ if __name__ == "__main__":
         titlebar = win32gui.GetWindowText(parent_handle)
         classname = win32gui.GetClassName(parent_handle)
 
-        img = ImageGrab.grab(bbox=(w0, h0, w1, h1))
+        img = ImageGrab.grab(bbox=(w0 + 4, h0 + 79, w1 - 4, h1))
         img.save('screenshot.png')
 
     while True:
         print(pyautogui.position())
         time.sleep(0.1)
+
+
+#以下、メインルーチン
+if __name__ == "__main__":
+    files = glob.glob('./images/*.png')
+    image = cv2.imread('screenshot.png')
+    img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    arr = np.full((48,64), None)
+
+    for fname in files:    
+        #検索したい画像を読み込む
+        template = cv2.imread(fname, 0)
+        base, ext = os.path.splitext(os.path.basename(fname))
+
+        #検索対象画像内で画像が一致するかを検索
+        result = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
+
+        # 一致部分を□で囲む
+        th, tw = template.shape[:2]
+        threshold = 0.85
+        loc = np.where(result >= threshold)
+        print(base)
+        for pt in zip(*loc[::-1]):
+            arr[pt[1]//16][pt[0]//16] = 9 if base in ['gray', 'flag'] else int(base)
+            print(pt[0]//16, pt[0]%16, pt[1]//16, pt[1]%16)
+            cv2.rectangle(image, pt, (pt[0] + tw, pt[1] + th), (255,0,255), 2)
+
+    for i in arr:
+        for j in i:
+            print(j if j != None else '%', end=' ')
+        print()
+
+    cv2.imwrite("test.png", image)
+
+    # main()
