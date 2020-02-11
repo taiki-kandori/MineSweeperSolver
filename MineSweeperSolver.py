@@ -24,8 +24,10 @@ import mouse
 class Field():
     def __init__(self):
         self.window_handle = None
+        self.rows = 48
+        self.cols = 64
         self.window_box = (None, None, None, None)
-        self.arr = np.full((48, 64), None)
+        self.arr = np.full((self.rows,self.cols), None)
         self.files = glob.glob('./images/*.png')
 
     def set_window_box(self, x0, y0, x1, y1):
@@ -36,8 +38,10 @@ class Field():
         img = ImageGrab.grab(bbox=(self.window_box))
         img.save('screenshot.png')
 
-    def update_field(self):
+    def update(self):
+        time.sleep(0.3)
         self.screenshot()
+        time.sleep(0.3)
 
         image = cv2.imread('screenshot.png')
         img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -104,8 +108,7 @@ def init_window():
 
 
 def on_click(field):
-    time.sleep(0.3)
-    field.update_field()
+    field.update()
 
     # field.print_field()
 
@@ -115,8 +118,5 @@ if __name__ == "__main__":
     field.set_window_box(*init_window())
 
     while True:
-        if mouse.is_pressed(button=mouse.LEFT):
-            while not mouse.is_pressed:
-                pass
-            on_click(field)
-        # time.sleep(0.1)
+        on_click(field)
+        time.sleep(0.1)
