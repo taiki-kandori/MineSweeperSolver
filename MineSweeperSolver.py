@@ -66,7 +66,8 @@ class Field():
         cv2.imwrite("test.png", image)
 
     def print_field(self):
-        print(np.array2string(self.arr, max_line_width=100, edgeitems=100))
+        print(np.array2string(self.arr, max_line_width=200, edgeitems=100))
+        print()
 
 
 def init_window():
@@ -110,7 +111,7 @@ def init_window():
 def on_click(field):
     field.update()
 
-    # field.print_field()
+    field.print_field()
 
 #以下、メインルーチン
 if __name__ == "__main__":
