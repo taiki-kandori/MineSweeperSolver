@@ -28,7 +28,9 @@ class Field():
         self.cols = 64
         self.window_box = (None, None, None, None)
         self.arr = np.full((self.rows,self.cols), None)
-        self.files = glob.glob('./images/*.png')
+        self.files = []
+        for fname in glob.glob('./images/*.png'):
+            self.files.append((cv2.imread(fname, 0), fname))
 
     def set_window_box(self, x0, y0, x1, y1):
         # スクリーンショット用に座標を調整する
@@ -46,9 +48,8 @@ class Field():
         image = cv2.imread('screenshot.png')
         img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        for fname in self.files:
+        for template, fname in self.files:
             #検索したい画像を読み込む
-            template = cv2.imread(fname, 0)
             base, ext = os.path.splitext(os.path.basename(fname))
 
             #検索対象画像内で画像が一致するかを検索
@@ -59,7 +60,7 @@ class Field():
             threshold = 0.85
             loc = np.where(result >= threshold)
             for pt in zip(*loc[::-1]):
-                self.arr[pt[1]//16][pt[0]//16] = 9 if base in ['gray', 'flag'] else int(base)
+                self.arr[pt[1]//16][pt[0]//16] = 9 if base in ['gray', 'flag', 'mine'] else int(base)
                 # print(pt[0]//16, pt[0]%16, pt[1]//16, pt[1]%16)
                 cv2.rectangle(image, pt, (pt[0] + tw, pt[1] + th), (255,0,255), 2)
 
