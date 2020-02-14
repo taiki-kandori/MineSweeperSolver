@@ -21,7 +21,9 @@ import numpy as np
 import mouse
 
 
-class Field():
+
+
+class MineSweeper():
     def __init__(self):
         self.window_handle = None
         self.rows = 48
@@ -110,16 +112,16 @@ def init_window():
     raise Exception
 
 
-def on_click(field):
-    field.update()
+def on_click(ms):
+    ms.update()
 
-    field.print_field()
+    ms.print_field()
 
 #以下、メインルーチン
 if __name__ == "__main__":
-    field = Field()
-    field.set_window_box(*init_window())
+    minesweeper = MineSweeper()
+    minesweeper.set_window_box(*init_window())
 
     while True:
-        on_click(field)
+        on_click(minesweeper)
         time.sleep(0.1)
