@@ -11,7 +11,7 @@ class Square(object):
         self.x = x
         self.y = y
         self.number = num
-        self.state = State.BLACK if num == 9 else State.WHITE if num else State.GRAY
+        self.state = State.BLACK if num == 9 else State.WHITE if num in [0, 1, 2, 3, 4, 5, 6, 7, 8] else State.GRAY
 
     def __str__(self):
         if self.state == State.BLACK:
