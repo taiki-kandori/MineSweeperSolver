@@ -29,7 +29,7 @@ class MineSweeper():
         self.window_handle = None
         self.rows = 48
         self.cols = 64
-        self.window_box = (None, None, None, None)
+        self.window_box = self.__init_window()
         
         self.field = [[Square(j, i) for i in range(self.cols)] for j in range(self.rows)]
         self.files = []
@@ -39,18 +39,52 @@ class MineSweeper():
             base, _ = os.path.splitext(os.path.basename(fname))
             self.files.append((template, base))
 
-    def set_window_box(self, x0, y0, x1, y1):
-        # スクリーンショット用に座標を調整する
-        self.window_box = (x0 + 4, y0 + 79, x1 - 4, y1)
+    def __init_window(self):
+        #画面サイズの取得
+        screen_x,screen_y = pyautogui.size()
+
+        #win32guiを使ってウインドウタイトルを探す
+        #Windowのハンドル取得('クラス名','タイトルの一部')で検索クラスがわからなかったらNoneにする
+        parent_handle = win32gui.FindWindow(None, "Mine2000")
+
+        #ハンドルIDが取れなかったら、mine2000を起動する
+        if parent_handle == 0:
+            cmd = 'C:\Program Files (x86)\mine2000 project\mine2000 ver2.2.1\mine2000.exe'
+            subprocess.Popen(cmd, shell=True)
+            time.sleep(1)
+            parent_handle = win32gui.FindWindow(None, "Mine2000")
+
+        if parent_handle == 0:
+            sys.exit()
+
+        #ハンドルが取れたら、ウインドウの左上と右下の座標取得と画面のアクティブ化
+        if parent_handle > 0:
+            w0, h0, w1, h1 = win32gui.GetWindowRect(parent_handle)
+            apw_x = w1 - w0
+            apw_y = h1 - h0
+
+            # ウィンドウをアクティブに持ってくる
+            win32gui.SetForegroundWindow(parent_handle)
+            time.sleep(0.5)
+
+            # ウィンドウを画面中央に持ってくる
+            x_pos = int((screen_x - apw_x) / 2)
+            y_pos = int((screen_y - apw_y) / 2)
+            win32gui.MoveWindow(parent_handle, x_pos, y_pos, apw_x, apw_y, True)
+
+            # スクリーンショット用に座標を調整する
+            return (w0 + 4, h0 + 79, w1 - 4, h1)
+
+        raise Exception     
 
     def screenshot(self):
         img = ImageGrab.grab(bbox=(self.window_box))
         img.save('screenshot.png')
 
     def update(self):
-        time.sleep(0.3)
+        time.sleep(0.4)
         self.screenshot()
-        time.sleep(0.3)
+        time.sleep(0.4)
 
         # スクリーンショットを読み込んでグレースケールにする
         image = cv2.imread('screenshot.png')
@@ -81,44 +115,6 @@ class MineSweeper():
         print()
 
 
-def init_window():
-    #画面サイズの取得
-    screen_x,screen_y = pyautogui.size()
-
-    #win32guiを使ってウインドウタイトルを探す
-    #Windowのハンドル取得('クラス名','タイトルの一部')で検索クラスがわからなかったらNoneにする
-    parent_handle = win32gui.FindWindow(None, "Mine2000")
-
-    #ハンドルIDが取れなかったら、mine2000を起動する
-    if parent_handle == 0:
-        cmd = 'C:\Program Files (x86)\mine2000 project\mine2000 ver2.2.1\mine2000.exe'
-        subprocess.Popen(cmd, shell=True)
-        time.sleep(1)
-        parent_handle = win32gui.FindWindow(None, "Mine2000")
-
-    if parent_handle == 0:
-        sys.exit()
-
-    #ハンドルが取れたら、ウインドウの左上と右下の座標取得と画面のアクティブ化
-    if parent_handle > 0:
-        w0, h0, w1, h1 = win32gui.GetWindowRect(parent_handle)
-        apw_x = w1 - w0
-        apw_y = h1 - h0
-
-        # ウィンドウをアクティブに持ってくる
-        win32gui.SetForegroundWindow(parent_handle)
-        time.sleep(0.5)
-
-        # ウィンドウを画面中央に持ってくる
-        x_pos = int((screen_x - apw_x) / 2)
-        y_pos = int((screen_y - apw_y) / 2)
-        win32gui.MoveWindow(parent_handle, x_pos, y_pos, apw_x, apw_y, True)
-
-        return w0, h0, w1, h1
-
-    raise Exception
-
-
 def on_click(ms):
     ms.update()
 
@@ -127,7 +123,6 @@ def on_click(ms):
 #以下、メインルーチン
 if __name__ == "__main__":
     minesweeper = MineSweeper()
-    minesweeper.set_window_box(*init_window())
 
     while True:
         on_click(minesweeper)
