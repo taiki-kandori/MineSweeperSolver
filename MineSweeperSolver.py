@@ -20,6 +20,7 @@ import glob
 import numpy as np
 import mouse
 
+from minesweeper_solver.square import Square
 
 
 
@@ -29,7 +30,9 @@ class MineSweeper():
         self.rows = 48
         self.cols = 64
         self.window_box = (None, None, None, None)
-        self.arr = np.full((self.rows,self.cols), None)
+        
+        # self.arr = np.full((self.rows,self.cols), None)
+        self.field = [[Square(j, i) for i in range(self.cols)] for j in range(self.rows)]
         self.files = []
         for fname in glob.glob('./images/*.png'):
             #検索したい画像を読み込む
@@ -62,15 +65,22 @@ class MineSweeper():
             th, tw = template.shape[:2]
             threshold = 0.85
             loc = np.where(result >= threshold)
+            print(base)
             for pt in zip(*loc[::-1]):
-                self.arr[pt[1]//16][pt[0]//16] = 9 if base in ['gray', 'flag', 'mine'] else int(base)
-                # print(pt[0]//16, pt[0]%16, pt[1]//16, pt[1]%16)
+                self.field[pt[1]//16][pt[0]//16].number = 9 if base in ['flag', 'mine'] else None if base == 'gray' else int(base)
+                self.field[pt[1]//16][pt[0]//16].update_state()
+                print(pt[0]//16, pt[1]//16, self.field[pt[1]//16][pt[0]//16].number, self.field[pt[1]//16][pt[0]//16].state)
                 cv2.rectangle(image, pt, (pt[0] + tw, pt[1] + th), (255,0,255), 2)
 
         cv2.imwrite("test.png", image)
 
     def print_field(self):
-        print(np.array2string(self.arr, max_line_width=200, edgeitems=100))
+        # print(np.array2string(self.arr, max_line_width=200, edgeitems=100))
+
+        for i in range(self.rows):
+            for j in range(self.cols):
+                print(self.field[i][j], end='')
+            print()
         print()
 
 

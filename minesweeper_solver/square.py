@@ -19,7 +19,15 @@ class Square(object):
         elif self.state == State.GRAY:
             return 'x'
         else:
-            return self.number
+            return str(self.number)
+
+    def update_state(self):
+        if self.number == 9:
+            self.state = State.BLACK
+        elif self.number in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+            self.state = State.WHITE
+        else:
+            self.state = State.GRAY
 
 
 
