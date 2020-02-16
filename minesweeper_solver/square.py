@@ -11,7 +11,7 @@ class Square(object):
         self.x = x
         self.y = y
         self.number = num
-        self.state = State.BLACK if num == 9 else State.WHITE if num in [0, 1, 2, 3, 4, 5, 6, 7, 8] else State.GRAY
+        self.state = State.BLACK if num == 9 else State.WHITE if num is not None else State.GRAY
 
     def __str__(self):
         if self.state == State.BLACK:
@@ -24,7 +24,7 @@ class Square(object):
     def update_state(self):
         if self.number == 9:
             self.state = State.BLACK
-        elif self.number in [0, 1, 2, 3, 4, 5, 6, 7, 8]:
+        elif self.number is not None:
             self.state = State.WHITE
         else:
             self.state = State.GRAY
