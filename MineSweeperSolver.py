@@ -87,8 +87,8 @@ class MineSweeper():
         time.sleep(0.4)
 
         # スクリーンショットを読み込んでグレースケールにする
-        image = cv2.imread('screenshot.png')
-        img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        image = cv2.imread('test_screenshot.png')
+        img_gray = cv2.imread('test_screenshot.png', cv2.IMREAD_GRAYSCALE)
 
         for template, base in self.files:
             #検索対象画像内で画像が一致するかを検索
@@ -96,7 +96,7 @@ class MineSweeper():
 
             # 一致部分を□で囲む
             th, tw = template.shape[:2]
-            threshold = 0.85
+            threshold = 0.9
             loc = np.where(result >= threshold)
             # print(base)
             for pt in zip(*loc[::-1]):
