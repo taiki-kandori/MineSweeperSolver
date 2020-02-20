@@ -1,5 +1,5 @@
 screenshot.png
-test_screenshot.png
+test_screenshot*.png
 test.png
 
 ## Ignore Visual Studio temporary files, build results, and
