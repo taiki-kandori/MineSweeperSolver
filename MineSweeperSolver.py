@@ -21,7 +21,7 @@ import numpy as np
 import mouse
 
 from minesweeper_solver.square import Square
-
+from minesweeper_solver.field import Field
 
 
 class MineSweeper():
@@ -30,8 +30,7 @@ class MineSweeper():
         self.rows = 48
         self.cols = 64
         self.window_box = self.__init_window()
-        
-        self.field = [[Square(j, i) for i in range(self.cols)] for j in range(self.rows)]
+        self.field = Field(self.cols, self.rows)
         self.files = []
         for fname in glob.glob('./images/*.png'):
             #検索したい画像を読み込む
@@ -87,8 +86,9 @@ class MineSweeper():
         time.sleep(0.4)
 
         # スクリーンショットを読み込んでグレースケールにする
-        image = cv2.imread('test_screenshot.png')
-        img_gray = cv2.imread('test_screenshot.png', cv2.IMREAD_GRAYSCALE)
+        image_name = 'screenshot.png'
+        image = cv2.imread(image_name)
+        img_gray = cv2.imread(image_name, cv2.IMREAD_GRAYSCALE)
 
         for template, base in self.files:
             #検索対象画像内で画像が一致するかを検索
@@ -96,7 +96,7 @@ class MineSweeper():
 
             # 一致部分を□で囲む
             th, tw = template.shape[:2]
-            threshold = 0.9
+            threshold = 0.868
             loc = np.where(result >= threshold)
             # print(base)
             for pt in zip(*loc[::-1]):
@@ -107,18 +107,10 @@ class MineSweeper():
 
         cv2.imwrite("test.png", image)
 
-    def print_field(self):
-        for i in range(self.rows):
-            for j in range(self.cols):
-                print(self.field[i][j], end='')
-            print()
-        print()
-
 
 def on_click(ms):
     ms.update()
-
-    ms.print_field()
+    print(ms.field)
 
 #以下、メインルーチン
 if __name__ == "__main__":
