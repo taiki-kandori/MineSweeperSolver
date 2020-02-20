@@ -34,7 +34,7 @@ class MineSweeper():
         self.files = []
         for fname in glob.glob('./images/*.png'):
             #検索したい画像を読み込む
-            template = cv2.imread(fname, 0)
+            template = self.adjust(cv2.imread(fname), 2, 0)
             base, _ = os.path.splitext(os.path.basename(fname))
             self.files.append((template, base))
 
@@ -80,23 +80,31 @@ class MineSweeper():
         img = ImageGrab.grab(bbox=(self.window_box))
         img.save('screenshot.png')
 
+    def adjust(self, img, alpha=1.0, beta=0.0):
+        # 積和演算を行う。
+        dst = alpha * img + beta
+        # [0, 255] でクリップし、uint8 型にする。
+        return np.clip(dst, 0, 255).astype(np.uint8)
+
     def update(self):
         time.sleep(0.4)
         self.screenshot()
         time.sleep(0.4)
 
-        # スクリーンショットを読み込んでグレースケールにする
+        # スクリーンショットを読み込んでコントラスト補正する
         image_name = 'screenshot.png'
+        # image_name = 'test_screenshot.png'
+
         image = cv2.imread(image_name)
-        img_gray = cv2.imread(image_name, cv2.IMREAD_GRAYSCALE)
+        img_2 = self.adjust(image, 2, 0)
 
         for template, base in self.files:
             #検索対象画像内で画像が一致するかを検索
-            result = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
+            result = cv2.matchTemplate(img_2, template, cv2.TM_CCOEFF_NORMED)
 
             # 一致部分を□で囲む
             th, tw = template.shape[:2]
-            threshold = 0.868
+            threshold = 0.99
             loc = np.where(result >= threshold)
             # print(base)
             for pt in zip(*loc[::-1]):
