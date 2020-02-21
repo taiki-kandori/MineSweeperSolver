@@ -17,7 +17,7 @@ class Square(object):
         if self.state == State.BLACK:
             return '*'
         elif self.state == State.GRAY:
-            return 'x'
+            return '?'
         else:
             return str(self.number)
 
