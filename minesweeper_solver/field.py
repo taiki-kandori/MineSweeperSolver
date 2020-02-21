@@ -12,3 +12,6 @@ class Field(object):
         line = ["".join(map(str, i)) for i in self.field]
         return '\n'.join(map(str, line))
 
+    def get_around(self, x, y):
+        return list(map(lambda li: li[x-1:x+2], self.field[y-1:y+2]))
+
