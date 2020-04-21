@@ -50,3 +50,15 @@ class Around(object):
                 if square.state == state:
                     cnt += 1
         return cnt
+
+    def get_square_pos(self, state):
+        squares = []
+        for line in self.field:
+            for square in line:
+                if square.get_pos() == self.center:
+                    continue
+
+                if square.state == state:
+                    squares.append(square.get_pos())
+
+        return squares
