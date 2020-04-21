@@ -1,5 +1,6 @@
 from minesweeper_solver.square import Square
 from minesweeper_solver.square import State
+from minesweeper_solver.square import Pos
 from collections import namedtuple
 
 Size = namedtuple('Size', 'x, y')
@@ -24,10 +25,9 @@ class Field(object):
         return Around(x, y, self.get_size(), self.field)
 
 
-Center = namedtuple("Center", 'x y')
 class Around(object):
     def __init__(self, x, y, size, field):
-        self.center = Center(x, y)
+        self.center = Pos(x, y)
         self.field = list(map(lambda li: li[max(0, x-1):min(x+2, size.x)], field[max(0, y-1):min(y+2, size.y)]))
         self.number_count = self.count(State.NUMBER)
         self.gray_count = self.count(State.GRAY)
@@ -44,7 +44,7 @@ class Around(object):
         cnt = 0
         for line in self.field:
             for square in line:
-                if square.x == self.center.x and square.y == self.center.y:
+                if square.get_pos() == self.center:
                     continue
 
                 if square.state == state:
