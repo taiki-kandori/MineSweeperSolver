@@ -21,14 +21,14 @@ class Field(object):
     def get_size(self):
         return Size(self.size_x, self.size_y)
 
-    def get_around(self, x, y):
-        return Around(x, y, self.get_size(), self.field)
+    def get_around(self, pos):
+        return Around(pos, self.get_size(), self.field)
 
 
 class Around(object):
-    def __init__(self, x, y, size, field):
-        self.center = Pos(x, y)
-        self.field = list(map(lambda li: li[max(0, x-1):min(x+2, size.x)], field[max(0, y-1):min(y+2, size.y)]))
+    def __init__(self, pos, size, field):
+        self.center = pos
+        self.field = list(map(lambda li: li[max(0, pos.x-1):min(pos.x+2, size.x)], field[max(0, pos.y-1):min(pos.y+2, size.y)]))
         self.number_count = self.count(State.NUMBER)
         self.gray_count = self.count(State.GRAY)
         self.mine_count = self.count(State.MINE)
@@ -44,7 +44,7 @@ class Around(object):
         cnt = 0
         for line in self.field:
             for square in line:
-                if square.get_pos() == self.center:
+                if square.pos == self.center:
                     continue
 
                 if square.state == state:
@@ -55,10 +55,10 @@ class Around(object):
         squares = []
         for line in self.field:
             for square in line:
-                if square.get_pos() == self.center:
+                if square.pos == self.center:
                     continue
 
                 if square.state == state:
-                    squares.append(square.get_pos())
+                    squares.append(square.pos)
 
         return squares

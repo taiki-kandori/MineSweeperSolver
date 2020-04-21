@@ -18,8 +18,7 @@ Pos = namedtuple("Pos", 'x y')
 class Square(object):
     """マインスイーパのマスの表現用"""
     def __init__(self, x, y, num=None):
-        self.x = x
-        self.y = y
+        self.pos = Pos(x, y)
         self.number = num
         self.state = State.MINE if num == 9 else State.WALL if num == -1 else State.NUMBER if num is not None else State.GRAY
         self.color = Color.GRAY
@@ -43,10 +42,4 @@ class Square(object):
             self.state = State.NUMBER
         else:
             self.state = State.GRAY
-
-    def get_pos(self):
-        return Pos(self.x, self.y)
-
-
-
 
