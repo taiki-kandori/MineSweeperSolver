@@ -24,6 +24,9 @@ class Field(object):
     def get_around(self, pos):
         return Around(pos, self.get_size(), self.field)
 
+    def get_square(self, pos):
+        return self.field[pos.y][pos.x]
+
 
 class Around(object):
     def __init__(self, pos, size, field):
