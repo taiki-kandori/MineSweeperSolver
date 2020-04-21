@@ -1,5 +1,5 @@
 from enum import IntEnum, auto
-
+from collections import namedtuple
 
 class State(IntEnum):
     NUMBER = auto()
@@ -14,6 +14,7 @@ class Color(IntEnum):
     BLACK = auto()
 
 
+Pos = namedtuple("Pos", 'x y')
 class Square(object):
     """マインスイーパのマスの表現用"""
     def __init__(self, x, y, num=None):
@@ -42,6 +43,10 @@ class Square(object):
             self.state = State.NUMBER
         else:
             self.state = State.GRAY
+
+    def get_pos(self):
+        return Pos(self.x, self.y)
+
 
 
 
