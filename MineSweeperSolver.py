@@ -18,6 +18,9 @@ import numpy as np
 import mouse
 
 from minesweeper_solver.square import Square
+from minesweeper_solver.square import State
+from minesweeper_solver.square import Color
+from minesweeper_solver.square import Pos
 from minesweeper_solver.field import Field
 
 
@@ -112,15 +115,40 @@ class MineSweeper():
 
         cv2.imwrite("test.png", image)
 
+    def select_square_pos(self):
+        for line in self.field:
+            for square in line:
+                if square.state == State.NUMBER and square.color == Color.GRAY:
+                    around = self.field.get_around(square.pos)
+                    gray = around.gray_count
+                    mine = around.mine_count
+                    if square.number == gray + mine and square.number != 0 and gray != 0:
+                        return True, square.pos
+
+        return False, None
+
+
 
 def on_click(ms):
-    ms.update()
+    # ms.update()
     print(ms.field)
-
+    around = ms.field.get_around(Pos(0, 1))
+    print(around)
+    print(ms.field.get_square(Pos(0 ,1)))
 
 if __name__ == "__main__":
     minesweeper = MineSweeper()
 
+    minesweeper.update()
+    # on_click(minesweeper)
+    # exit()
     while True:
-        on_click(minesweeper)
-        time.sleep(0.1)
+        ok, pos = minesweeper.select_square_pos()
+        if not ok:
+            print('None')
+        else:
+            print(pos)
+            print(minesweeper.field.get_around(pos))
+
+        minesweeper.update()
+        time.sleep(1)
