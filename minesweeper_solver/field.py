@@ -9,7 +9,7 @@ class Field(object):
     def __init__(self, n, m):
         self.size_x = n
         self.size_y = m
-        self.field = [[Square(j, i) for i in range(n)] for j in range(m)]
+        self.field = [[Square(i, j) for i in range(n)] for j in range(m)]
 
     def __getitem__(self, i):
         return self.field[i]
