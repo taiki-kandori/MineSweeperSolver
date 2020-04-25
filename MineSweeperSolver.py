@@ -16,12 +16,18 @@ import cv2
 import glob
 import numpy as np
 import mouse
+from enum import IntEnum, auto
 
 from minesweeper_solver.square import Square
 from minesweeper_solver.square import State
 from minesweeper_solver.square import Color
 from minesweeper_solver.square import Pos
 from minesweeper_solver.field import Field
+
+
+class GrayState(IntEnum):
+    NUMBER = auto()
+    MINE = auto()
 
 
 class MineSweeper():
@@ -122,10 +128,22 @@ class MineSweeper():
                     around = self.field.get_around(square.pos)
                     gray = around.gray_count
                     mine = around.mine_count
-                    if square.number == gray + mine and square.number != 0 and gray != 0:
-                        return True, square.pos
 
-        return False, None
+                    # 残りの?マスと数字が同じ
+                    if square.number == gray + mine and square.number != 0 and gray != 0:
+                        for l in around:
+                            for s in l:
+                                if s.state == State.GRAY:
+                                    return True, GrayState.MINE, s.pos
+
+                    # 数字と同じだけ周りにmineがあるとき
+                    if square.number == mine and square.number != 0:
+                        for l in around:
+                            for s in l:
+                                if s.state == State.GRAY:
+                                    return True, GrayState.NUMBER, s.pos
+
+        return False, None, None
 
 
 
@@ -143,11 +161,11 @@ if __name__ == "__main__":
     # on_click(minesweeper)
     # exit()
     while True:
-        ok, pos = minesweeper.select_square_pos()
+        ok, gray_state, pos = minesweeper.select_square_pos()
         if not ok:
             print('None')
         else:
-            print(pos)
+            print(pos, gray_state)
             print(minesweeper.field.get_around(pos))
 
         minesweeper.update()
