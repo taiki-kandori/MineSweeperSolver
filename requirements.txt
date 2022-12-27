@@ -16,7 +16,7 @@ PyScreeze==0.1.26
 PyTweening==1.0.3
 pywin32==227
 pywinauto==0.6.8
-setuptools==45.1.0
+setuptools==65.5.1
 six==1.14.0
 win32core==221.36
 win32gui==221.6
